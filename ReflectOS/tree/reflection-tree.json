@@ -1,0 +1,266 @@
+{
+  "meta": {
+    "title": "The Daily Reflection Tree",
+    "version": "1.0.0",
+    "startNodeId": "START",
+    "description": "A deterministic end-of-day reflection tree covering locus, contribution, and radius of concern."
+  },
+  "nodes": [
+    {
+      "id": "START",
+      "parentId": null,
+      "type": "start",
+      "text": "Good evening. This will take a few minutes. No grades, no fixing, just a clearer look at how you moved through today.",
+      "target": "Q_DAY_WORD"
+    },
+    {
+      "id": "Q_DAY_WORD",
+      "parentId": "START",
+      "type": "question",
+      "text": "Which word is closest to how today felt?",
+      "options": [
+        { "label": "Productive", "target": "D_OPEN_TONE" },
+        { "label": "Steady", "target": "D_OPEN_TONE" },
+        { "label": "Heavy", "target": "D_OPEN_TONE" },
+        { "label": "Frustrating", "target": "D_OPEN_TONE" }
+      ]
+    },
+    {
+      "id": "D_OPEN_TONE",
+      "parentId": "Q_DAY_WORD",
+      "type": "decision",
+      "rules": [
+        { "if": "answer:Q_DAY_WORD in [Productive, Steady]", "target": "A1_Q1_HIGH" },
+        { "if": "answer:Q_DAY_WORD in [Heavy, Frustrating]", "target": "A1_Q1_LOW" }
+      ]
+    },
+    {
+      "id": "A1_Q1_HIGH",
+      "parentId": "D_OPEN_TONE",
+      "type": "question",
+      "text": "When something went well today, what most explains it?",
+      "options": [
+        { "label": "I prepared for it", "signal": ["axis1:internal"], "target": "A1_Q2_RECOVERY" },
+        { "label": "I adjusted in the moment", "signal": ["axis1:internal"], "target": "A1_Q2_RECOVERY" },
+        { "label": "Other people carried it", "signal": ["axis1:external"], "target": "A1_Q2_RECOVERY" },
+        { "label": "The situation just broke my way", "signal": ["axis1:external"], "target": "A1_Q2_RECOVERY" }
+      ]
+    },
+    {
+      "id": "A1_Q1_LOW",
+      "parentId": "D_OPEN_TONE",
+      "type": "question",
+      "text": "When the day got difficult, what was your first instinct?",
+      "options": [
+        { "label": "Look for what I could still control", "signal": ["axis1:internal"], "target": "A1_Q2_RECOVERY" },
+        { "label": "Change my approach and keep moving", "signal": ["axis1:internal"], "target": "A1_Q2_RECOVERY" },
+        { "label": "Wait for someone else to unblock it", "signal": ["axis1:external"], "target": "A1_Q2_RECOVERY" },
+        { "label": "Feel pinned by the situation", "signal": ["axis1:external"], "target": "A1_Q2_RECOVERY" }
+      ]
+    },
+    {
+      "id": "A1_Q2_RECOVERY",
+      "parentId": "A1_Q1_HIGH",
+      "type": "question",
+      "text": "Later in the day, which move sounded most like you?",
+      "options": [
+        { "label": "I made one small decision and kept going", "signal": ["axis1:internal"], "target": "A1_D_REFRAME" },
+        { "label": "I asked for help early and clearly", "signal": ["axis1:internal"], "target": "A1_D_REFRAME" },
+        { "label": "I mostly waited for the context to change", "signal": ["axis1:external"], "target": "A1_D_REFRAME" },
+        { "label": "I replayed what went wrong more than what I could do", "signal": ["axis1:external"], "target": "A1_D_REFRAME" }
+      ]
+    },
+    {
+      "id": "A1_D_REFRAME",
+      "parentId": "A1_Q2_RECOVERY",
+      "type": "decision",
+      "rules": [
+        { "if": "dominant:axis1 = internal", "target": "A1_R_INTERNAL" },
+        { "if": "dominant:axis1 = external", "target": "A1_R_EXTERNAL" },
+        { "if": "tie:axis1", "target": "A1_R_MIXED" }
+      ]
+    },
+    {
+      "id": "A1_R_INTERNAL",
+      "parentId": "A1_D_REFRAME",
+      "type": "reflection",
+      "text": "You gave yourself some room to act. Agency does not mean controlling everything; it means noticing the next move that was still yours. Today, your answers leaned in that direction.",
+      "target": "BRIDGE_1_2"
+    },
+    {
+      "id": "A1_R_EXTERNAL",
+      "parentId": "A1_D_REFRAME",
+      "type": "reflection",
+      "text": "A hard day can make everything feel imposed from the outside. Your answers leaned there. The useful question is not 'Was the day fair?' but 'Where was the smallest choice that still belonged to me?'",
+      "target": "BRIDGE_1_2"
+    },
+    {
+      "id": "A1_R_MIXED",
+      "parentId": "A1_D_REFRAME",
+      "type": "reflection",
+      "text": "Today looked mixed on agency. That usually means reality was genuinely constrained, but not empty of choice. You saw both the pressure around you and at least one lever inside your reach.",
+      "target": "BRIDGE_1_2"
+    },
+    {
+      "id": "BRIDGE_1_2",
+      "parentId": "A1_R_INTERNAL",
+      "type": "bridge",
+      "text": "The next question is what you were oriented toward. Once we notice our choices, we can also notice what we were trying to give or get.",
+      "target": "A2_Q1_MOMENT"
+    },
+    {
+      "id": "A2_Q1_MOMENT",
+      "parentId": "BRIDGE_1_2",
+      "type": "question",
+      "text": "Think of one interaction from today. Which description fits best?",
+      "options": [
+        { "label": "I helped someone without being asked", "signal": ["axis2:contribution"], "target": "A2_Q2_RECOGNITION" },
+        { "label": "I shared context or taught something useful", "signal": ["axis2:contribution"], "target": "A2_Q2_RECOGNITION" },
+        { "label": "I felt under-recognized for what I did", "signal": ["axis2:entitlement"], "target": "A2_Q2_RECOGNITION" },
+        { "label": "I was focused on what others should have done for me", "signal": ["axis2:entitlement"], "target": "A2_Q2_RECOGNITION" }
+      ]
+    },
+    {
+      "id": "A2_Q2_RECOGNITION",
+      "parentId": "A2_Q1_MOMENT",
+      "type": "question",
+      "text": "When your effort was not fully seen, what did you feel most strongly?",
+      "options": [
+        { "label": "The work still mattered", "signal": ["axis2:contribution"], "target": "A2_Q3_EXTRA" },
+        { "label": "I wanted the team to succeed more than I wanted credit", "signal": ["axis2:contribution"], "target": "A2_Q3_EXTRA" },
+        { "label": "I should not have to give more unless it is noticed", "signal": ["axis2:entitlement"], "target": "A2_Q3_EXTRA" },
+        { "label": "I kept score on who owed what", "signal": ["axis2:entitlement"], "target": "A2_Q3_EXTRA" }
+      ]
+    },
+    {
+      "id": "A2_Q3_EXTRA",
+      "parentId": "A2_Q2_RECOGNITION",
+      "type": "question",
+      "text": "Which statement comes closest to your posture today?",
+      "options": [
+        { "label": "I looked for one useful thing I could add", "signal": ["axis2:contribution"], "target": "A2_D_REFRAME" },
+        { "label": "I took responsibility beyond my exact role", "signal": ["axis2:contribution"], "target": "A2_D_REFRAME" },
+        { "label": "I mostly noticed what support I was not getting", "signal": ["axis2:entitlement"], "target": "A2_D_REFRAME" },
+        { "label": "I withdrew when things felt unfair", "signal": ["axis2:entitlement"], "target": "A2_D_REFRAME" }
+      ]
+    },
+    {
+      "id": "A2_D_REFRAME",
+      "parentId": "A2_Q3_EXTRA",
+      "type": "decision",
+      "rules": [
+        { "if": "dominant:axis2 = contribution", "target": "A2_R_CONTRIBUTION" },
+        { "if": "dominant:axis2 = entitlement", "target": "A2_R_ENTITLEMENT" },
+        { "if": "tie:axis2", "target": "A2_R_MIXED" }
+      ]
+    },
+    {
+      "id": "A2_R_CONTRIBUTION",
+      "parentId": "A2_D_REFRAME",
+      "type": "reflection",
+      "text": "Your answers leaned toward contribution. That usually creates quiet strength: you stop waiting for the day to pay you back and start asking what useful trace you left behind.",
+      "target": "BRIDGE_2_3"
+    },
+    {
+      "id": "A2_R_ENTITLEMENT",
+      "parentId": "A2_D_REFRAME",
+      "type": "reflection",
+      "text": "Your answers leaned toward what was missing for you. That is human, especially on tiring days. The risk is that it narrows your field of action. Contribution begins when the question shifts from 'What am I owed?' to 'What did I strengthen?'",
+      "target": "BRIDGE_2_3"
+    },
+    {
+      "id": "A2_R_MIXED",
+      "parentId": "A2_D_REFRAME",
+      "type": "reflection",
+      "text": "Today looked mixed on contribution. You wanted fairness, but you also still cared about adding value. The next step is noticing which side grows stronger when the day gets hard.",
+      "target": "BRIDGE_2_3"
+    },
+    {
+      "id": "BRIDGE_2_3",
+      "parentId": "A2_R_CONTRIBUTION",
+      "type": "bridge",
+      "text": "The last shift is radius. Once we ask what we gave, the frame can widen from 'me and my day' to 'who else was touched by it.'",
+      "target": "A3_Q1_RADIUS"
+    },
+    {
+      "id": "A3_Q1_RADIUS",
+      "parentId": "BRIDGE_2_3",
+      "type": "question",
+      "text": "When you think about today's hardest moment, who comes to mind first?",
+      "options": [
+        { "label": "Mostly me and my workload", "signal": ["axis3:self"], "target": "A3_Q2_PRESSURE" },
+        { "label": "My team and the shared deadline", "signal": ["axis3:other"], "target": "A3_Q2_PRESSURE" },
+        { "label": "A colleague who was carrying a lot", "signal": ["axis3:other"], "target": "A3_Q2_PRESSURE" },
+        { "label": "The customer or end user depending on us", "signal": ["axis3:other"], "target": "A3_Q2_PRESSURE" }
+      ]
+    },
+    {
+      "id": "A3_Q2_PRESSURE",
+      "parentId": "A3_Q1_RADIUS",
+      "type": "question",
+      "text": "Under pressure, what did your attention revolve around?",
+      "options": [
+        { "label": "How stressed or blocked I felt", "signal": ["axis3:self"], "target": "A3_Q3_MEANING" },
+        { "label": "How my reaction would affect the group", "signal": ["axis3:other"], "target": "A3_Q3_MEANING" },
+        { "label": "Who needed clarity from me", "signal": ["axis3:other"], "target": "A3_Q3_MEANING" },
+        { "label": "What would make my day easier fastest", "signal": ["axis3:self"], "target": "A3_Q3_MEANING" }
+      ]
+    },
+    {
+      "id": "A3_Q3_MEANING",
+      "parentId": "A3_Q2_PRESSURE",
+      "type": "question",
+      "text": "Which ending feels truest after a day like this?",
+      "options": [
+        { "label": "I mostly need relief", "signal": ["axis3:self"], "target": "A3_D_REFRAME" },
+        { "label": "I want to leave things a little better for others", "signal": ["axis3:other"], "target": "A3_D_REFRAME" },
+        { "label": "Meaning comes when I remember the larger mission", "signal": ["axis3:other"], "target": "A3_D_REFRAME" },
+        { "label": "I just want to get through my part", "signal": ["axis3:self"], "target": "A3_D_REFRAME" }
+      ]
+    },
+    {
+      "id": "A3_D_REFRAME",
+      "parentId": "A3_Q3_MEANING",
+      "type": "decision",
+      "rules": [
+        { "if": "dominant:axis3 = other", "target": "A3_R_ALTROCENTRIC" },
+        { "if": "dominant:axis3 = self", "target": "A3_R_SELFCENTRIC" },
+        { "if": "tie:axis3", "target": "A3_R_MIXED" }
+      ]
+    },
+    {
+      "id": "A3_R_ALTROCENTRIC",
+      "parentId": "A3_D_REFRAME",
+      "type": "reflection",
+      "text": "Your radius widened beyond yourself. That does not erase your own strain; it puts it in context. People often find the steadiest meaning in work exactly there: in remembering who else is affected by how they show up.",
+      "target": "SUMMARY"
+    },
+    {
+      "id": "A3_R_SELFCENTRIC",
+      "parentId": "A3_D_REFRAME",
+      "type": "reflection",
+      "text": "Your attention stayed close to self today. That is common when energy is low. The invitation is not self-denial; it is expansion. Sometimes suffering loosens when the frame grows large enough to include someone besides you.",
+      "target": "SUMMARY"
+    },
+    {
+      "id": "A3_R_MIXED",
+      "parentId": "A3_D_REFRAME",
+      "type": "reflection",
+      "text": "Today looked mixed on radius. You were carrying your own load, but you still had flashes of awareness about others. That widening is often where meaning begins.",
+      "target": "SUMMARY"
+    },
+    {
+      "id": "SUMMARY",
+      "parentId": "A3_R_ALTROCENTRIC",
+      "type": "summary",
+      "text": "Today felt '{Q_DAY_WORD.answer}'. You leaned {axis1.dominantLabel} on agency, {axis2.dominantLabel} on contribution, and {axis3.dominantLabel} on radius of concern. Your answers suggest that when pressure rose, you sounded most like '{A1_Q2_RECOVERY.answer}', you most noticed '{A2_Q1_MOMENT.answer}', and your attention first went to '{A3_Q1_RADIUS.answer}'. Tomorrow's prompt: {summaryPrompt}.",
+      "target": "END"
+    },
+    {
+      "id": "END",
+      "parentId": "SUMMARY",
+      "type": "end",
+      "text": "That's enough for tonight. See you tomorrow."
+    }
+  ]
+}
